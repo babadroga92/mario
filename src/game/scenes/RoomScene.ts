@@ -162,8 +162,12 @@ export default class RoomScene extends Phaser.Scene {
     });
 
     // player
-    this.player = this.physics.add.sprite(110, h - 140, "px-green");
-    this.player.setDisplaySize(22, 28);
+    this.player = this.physics.add.sprite(110, h - 140, "");
+    this.player.setSize(22, 28);
+    this.player.setVisible(false);
+
+    this.attachEmoji(this.player, "🧑‍💻", 28);
+
     this.player.setCollideWorldBounds(true);
 
     // enemies
@@ -293,8 +297,12 @@ export default class RoomScene extends Phaser.Scene {
   }
 
   private spawnEnemy(x: number, y: number, patrol?: { minX: number; maxX: number }) {
-    const e = this.physics.add.sprite(x, y, "px-red");
-    e.setDisplaySize(24, 24);
+    const e = this.physics.add.sprite(x, y, "");
+    e.setSize(24, 24);
+    e.setVisible(false);
+
+    this.attachEmoji(e, "🕵️‍♂️", 26);
+
 
     // We handle turning ourselves; do not bounce off world bounds
     e.setCollideWorldBounds(false);
@@ -336,8 +344,12 @@ export default class RoomScene extends Phaser.Scene {
   }
 
   private fire() {
-    const b = this.physics.add.sprite(this.player.x + 16, this.player.y, "px-gold");
-    b.setDisplaySize(10, 6);
+    const b = this.physics.add.sprite(this.player.x + 16, this.player.y, "");
+    b.setSize(10, 6);
+    b.setVisible(false);
+
+    this.attachEmoji(b, "⚡", 20);
+
     b.body.allowGravity = false;
     b.setVelocityX(520);
 
@@ -399,13 +411,21 @@ export default class RoomScene extends Phaser.Scene {
     const fx = Phaser.Math.Between(px - pWidth / 2 + pad, px + pWidth / 2 - pad);
     const fy = py - 30;
 
-    const flower = this.physics.add.sprite(fx, fy, "px-flower");
-    flower.setDisplaySize(24, 24);
+    const flower = this.physics.add.sprite(fx, fy, "");
+    flower.setSize(24, 24);
+    flower.setVisible(false);
     flower.body.allowGravity = false;
 
-    const queen = this.physics.add.sprite(w - 190, h - 140, "px-pink");
-    queen.setDisplaySize(28, 38);
+    this.attachEmoji(flower, "🌸", 28);
+
+
+    const queen = this.physics.add.sprite(w - 190, h - 140, "");
+    queen.setSize(28, 38);
+    queen.setVisible(false);
     queen.body.allowGravity = false;
+
+    this.attachEmoji(queen, "👸", 32);
+
 
     // Make final room harder: extra enemies on ground + platforms
     // Ground enemies
@@ -492,4 +512,32 @@ export default class RoomScene extends Phaser.Scene {
     this.state.points += delta;
     this.updateUI();
   }
+
+
+  private attachEmoji(
+    target: Phaser.GameObjects.Sprite,
+    emoji: string,
+    size = 28
+  ) {
+    const txt = this.add
+      .text(target.x, target.y, emoji, {
+        fontSize: `${size}px`,
+      })
+      .setOrigin(0.5);
+  
+    // keep emoji synced to physics body
+    this.events.on("update", () => {
+      txt.setPosition(target.x, target.y);
+    });
+  
+    // clean up automatically
+    target.on("destroy", () => {
+      txt.destroy();
+    });
+  
+    return txt;
+  }
+  
 }
+
+
