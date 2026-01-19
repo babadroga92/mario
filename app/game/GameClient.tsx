@@ -2,8 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { createGame } from "@/src/game/createGame";
-import { gameEvents } from "@/src/game/events";
+
 
 type ScoreRow = { username: string; score: number; timeMs: number; won: boolean; createdAt: number };
 
@@ -23,25 +22,45 @@ export default function GameClient() {
 
   useEffect(() => {
     if (!ref.current) return;
-    const game = createGame(ref.current, username);
-
-    const handler = async (p: { username: string; score: number; timeMs: number; won: boolean }) => {
-      setFinal({ score: p.score });
-      await fetch("/api/scores", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(p),
-      });
-      await loadTop5();
-    };
-
-    gameEvents.on("SCORE_SUBMIT", handler);
+  
+    let game: any;
+    let events: any;
+  
+    (async () => {
+      const mod = await import("@/src/game/createGame");
+      const ev = await import("@/src/game/events");
+  
+      const createGame = mod.createGame;
+      events = ev.gameEvents;
+  
+      game = createGame(ref.current!, username);
+  
+      const handler = async (p: { username: string; score: number; timeMs: number; won: boolean }) => {
+        setFinal({ score: p.score });
+        await fetch("/api/scores", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(p),
+        });
+        await loadTop5();
+      };
+  
+      events.on("SCORE_SUBMIT", handler);
+  
+      // store handler for cleanup
+      (game as any).__scoreHandler = handler;
+    })();
+  
     return () => {
-      gameEvents.off("SCORE_SUBMIT", handler);
-      game.destroy(true);
+      // cleanup safely
+      if (events && game && (game as any).__scoreHandler) {
+        events.off("SCORE_SUBMIT", (game as any).__scoreHandler);
+      }
+      if (game) game.destroy(true);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username]);
+  
 
   useEffect(() => {
     loadTop5();
