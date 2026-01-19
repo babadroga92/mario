@@ -464,22 +464,30 @@ flower.body.allowGravity = false;
   public applyQuizResult(nextData: { hearts: number; points: number }) {
     this.state.hearts = nextData.hearts;
     this.state.points = nextData.points;
-
+  
+    // Always stop the quiz scene if it's still around
+    if (this.scene.isActive("quiz") || this.scene.isPaused("quiz")) {
+      this.scene.stop("quiz");
+    }
+  
+    // If dead -> end game (do NOT resume or restart)
     if (this.state.hearts <= 0) {
       this.endGame(false);
       return;
     }
-
-    this.scene.stop("quiz");
+  
+    // Continue to next room
+    this.scene.resume(); // resume the room scene (it was paused)
     this.scene.restart({
       roomIndex: this.state.roomIndex + 1,
       hearts: this.state.hearts,
       points: this.state.points,
       startTimeMs: this.state.startTimeMs,
     });
-
+  
     (this as any)._exitLock = false;
   }
+  
 
   private endGame(won: boolean) {
     const elapsedMs = Date.now() - this.state.startTimeMs;

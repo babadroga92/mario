@@ -125,7 +125,7 @@ export default class QuizScene extends Phaser.Scene {
         cont.setInteractive({ useHandCursor: true }).on("pointerdown", () => {
           const room = this.scene.get("room") as any;
           room.applyQuizResult({ hearts, points });
-          room.scene.resume();
+          room.scene.stop();
         });
       });
 
