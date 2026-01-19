@@ -97,7 +97,7 @@ export default function Home() {
           <div className="font-semibold mb-2 text-white">Controls:</div>
           <div>← → or A/D — Move</div>
           <div>↑ or SPACE — Jump</div>
-          <div>X or ENTER — Shoot</div>
+          <div>X or ENTER — Zap ⚡</div>
           <div className="mt-2 text-slate-200/75">
             Bonus: Jumping on a thief from above can defeat them (Mario-style).
           </div>
