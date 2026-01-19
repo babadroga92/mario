@@ -166,7 +166,7 @@ export default class RoomScene extends Phaser.Scene {
     this.player.setSize(22, 28);
     this.player.setVisible(false);
 
-    this.attachEmoji(this.player, "🧑‍💻", 28);
+    this.attachEmoji(this.player, "🦸‍♂️", 30);
 
     this.player.setCollideWorldBounds(true);
 
@@ -301,7 +301,7 @@ export default class RoomScene extends Phaser.Scene {
     e.setSize(24, 24);
     e.setVisible(false);
 
-    this.attachEmoji(e, "🕵️‍♂️", 26);
+    this.attachEmoji(e, "🥷", 26);
 
 
     // We handle turning ourselves; do not bounce off world bounds
@@ -424,7 +424,7 @@ export default class RoomScene extends Phaser.Scene {
     queen.setVisible(false);
     queen.body.allowGravity = false;
 
-    this.attachEmoji(queen, "👸", 32);
+    this.attachEmoji(queen, "👸", 34);
 
 
     // Make final room harder: extra enemies on ground + platforms
