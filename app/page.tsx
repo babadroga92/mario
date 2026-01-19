@@ -52,9 +52,14 @@ export default function Home() {
               a <span className="text-white font-semibold">Quiz Checkpoint</span>.
             </li>
             <li>
-              Answering wrong shows the correct answer, removes{" "}
-              <span className="text-white font-semibold">1 heart</span>, and you still move on.
-            </li>
+  Answering wrong shows the correct answer and deducts{" "}
+  <span className="text-white font-semibold">100 points</span> — you still move on.
+</li>
+<li>
+  ⚠️ <span className="text-amber-300 font-semibold">Pay attention to the questions!</span>{" "}
+  Quiz answers are worth more than defeating data thieves.
+</li>
+
             <li>
               Final room: find the <span className="text-white font-semibold">🌸 flower</span> and
               bring it to the <span className="text-white font-semibold">Queen 👑</span> to win.
