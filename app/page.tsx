@@ -1,65 +1,103 @@
-import Image from "next/image";
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function Home() {
+  const [username, setUsername] = useState("");
+  const router = useRouter();
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="min-h-screen flex items-center justify-center bg-gradient-to-b from-purple-900 to-purple-700 p-6">
+      <div className="w-full max-w-xl rounded-2xl bg-slate-900/60 border border-white/10 p-8 shadow-2xl">
+        <div className="text-center mb-6">
+          <div className="text-5xl font-black tracking-widest text-white drop-shadow">
+            DATA PRIVACY
+          </div>
+
+          <div className="text-3xl font-extrabold tracking-widest text-emerald-400 mt-1">
+            QUEST
+          </div>
+
+          {/* Pixel-style badges */}
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs font-bold tracking-wider">
+            <span className="px-3 py-1 rounded-lg bg-slate-950/70 border border-white/10 text-rose-300">
+              ❤️ 3 HEARTS
+            </span>
+            <span className="px-3 py-1 rounded-lg bg-slate-950/70 border border-white/10 text-cyan-300">
+              ❓ 5 QUIZ ROOMS
+            </span>
+            <span className="px-3 py-1 rounded-lg bg-slate-950/70 border border-white/10 text-emerald-300">
+              🌸 FINAL FLOWER QUEST
+            </span>
+          </div>
+
+          <p className="text-slate-200/85 mt-4 leading-relaxed">
+            Dash through <span className="text-white font-semibold">6 rooms</span>, defeat{" "}
+            <span className="text-white font-semibold">data thieves</span>, and pass{" "}
+            <span className="text-white font-semibold">GDPR Quiz Checkpoints</span> to protect the
+            kingdom’s privacy.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="rounded-xl bg-slate-950/35 border border-white/10 p-4 text-slate-100/90 text-sm leading-relaxed">
+          <div className="font-bold text-white mb-2">How it works</div>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>
+              You start with <span className="text-white font-semibold">3 hearts</span>. If hearts
+              hit <span className="text-white font-semibold">0</span>, the game ends.
+            </li>
+            <li>
+              Rooms <span className="text-white font-semibold">1–5</span>: reach the door to trigger
+              a <span className="text-white font-semibold">Quiz Checkpoint</span>.
+            </li>
+            <li>
+              Answering wrong shows the correct answer, removes{" "}
+              <span className="text-white font-semibold">1 heart</span>, and you still move on.
+            </li>
+            <li>
+              Final room: find the <span className="text-white font-semibold">🌸 flower</span> and
+              bring it to the <span className="text-white font-semibold">Queen 👑</span> to win.
+            </li>
+            <li>
+              Tip:{" "}
+              <span className="text-emerald-300 font-semibold">
+                More data thieves you kill, more points!
+              </span>
+            </li>
+          </ul>
         </div>
-      </main>
-    </div>
+
+        <div className="mt-6">
+          <label className="block text-white font-semibold mb-2">Enter Your Username</label>
+          <input
+            className="w-full rounded-xl bg-slate-950/60 border border-white/10 p-3 text-white outline-none focus:ring-2 focus:ring-emerald-400"
+            placeholder="Your hero name..."
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </div>
+
+        <button
+          className="mt-4 w-full rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3"
+          onClick={() => {
+            const name = username.trim() || "Anonymous";
+            router.push(`/game?u=${encodeURIComponent(name)}`);
+          }}
+        >
+          ▶ START QUEST
+        </button>
+
+        <div className="mt-6 text-sm text-slate-200/85">
+          <div className="font-semibold mb-2 text-white">Controls:</div>
+          <div>← → or A/D — Move</div>
+          <div>↑ or SPACE — Jump</div>
+          <div>X or ENTER — Shoot</div>
+          <div className="mt-2 text-slate-200/75">
+            Bonus: Jumping on a thief from above can defeat them (Mario-style).
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }
