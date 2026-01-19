@@ -1,49 +1,45 @@
 import { kv } from "@vercel/kv";
 
-type ScoreRow = { username: string; score: number; timeMs: number; won: boolean; createdAt: number };
+export const runtime = "edge";
 
-const KEY = "dpq:scores";
+type ScoreRow = {
+  username: string;
+  score: number;
+  timeMs: number;
+  won: boolean;
+  createdAt: number;
+};
 
-// Local fallback for dev if KV isn’t configured
-const mem: { items: ScoreRow[] } = (globalThis as any).__dpq_mem ?? ((globalThis as any).__dpq_mem = { items: [] });
-
-async function readAll(): Promise<ScoreRow[]> {
-  try {
-    const items = (await kv.get<ScoreRow[]>(KEY)) ?? [];
-    return items;
-  } catch {
-    return mem.items;
-  }
-}
-
-async function writeAll(items: ScoreRow[]) {
-  try {
-    await kv.set(KEY, items);
-  } catch {
-    mem.items = items;
-  }
-}
+const KEY = "scores";
 
 export async function GET(req: Request) {
-  const url = new URL(req.url);
-  const top = Number(url.searchParams.get("top") || "5");
+  const { searchParams } = new URL(req.url);
+  const top = Number(searchParams.get("top") || "5");
 
-  const items = await readAll();
-  const sorted = [...items].sort((a, b) => b.score - a.score).slice(0, top);
+  const items = (await kv.lrange<ScoreRow>(KEY, 0, -1)) || [];
 
-  return Response.json({ items: sorted });
+  const sorted = items.sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    if (a.timeMs !== b.timeMs) return a.timeMs - b.timeMs;
+    return b.createdAt - a.createdAt;
+  });
+
+  return Response.json({ items: sorted.slice(0, top) });
 }
 
 export async function POST(req: Request) {
-  const body = (await req.json()) as { username: string; score: number; timeMs: number; won: boolean };
-  const row: ScoreRow = { ...body, createdAt: Date.now() };
+  const body = await req.json();
 
-  const items = await readAll();
-  items.push(row);
+  const row: ScoreRow = {
+    username: body.username || "Anonymous",
+    score: Number(body.score) || 0,
+    timeMs: Number(body.timeMs) || 0,
+    won: Boolean(body.won),
+    createdAt: Date.now(),
+  };
 
-  // keep list from growing forever
-  const trimmed = items.sort((a, b) => b.score - a.score).slice(0, 500);
-  await writeAll(trimmed);
+  await kv.lpush(KEY, row);
+  await kv.ltrim(KEY, 0, 499); // keep last 500
 
   return Response.json({ ok: true });
 }
