@@ -15,9 +15,7 @@ const ROOMS: {
       [470, 340, 110],
       [740, 280, 110],
     ],
-    enemies: [
-      [520, 520], // ground roam
-    ],
+    enemies: [[520, 520]],
     doorY: 260,
   },
 
@@ -30,10 +28,7 @@ const ROOMS: {
       [740, 270, 120],
     ],
     enemies: [
-      [420, 520], // ground
-      // platform enemy with rails (computed below in code if you prefer),
-      // but we can also hardcode rails here if we want:
-      // [520, 325, 465, 575]
+      [420, 520],
       [520, 325],
     ],
     doorY: 250,
@@ -48,8 +43,8 @@ const ROOMS: {
       [730, 230, 110],
     ],
     enemies: [
-      [520, 520], // ground
-      [620, 265], // intended platform enemy
+      [520, 520],
+      [620, 265],
     ],
     doorY: 215,
   },
@@ -63,8 +58,8 @@ const ROOMS: {
       [560, 260, 140],
     ],
     enemies: [
-      [760, 520], // ground
-      [500, 345], // intended platform enemy
+      [760, 520],
+      [500, 345],
     ],
     doorY: 300,
   },
@@ -78,9 +73,9 @@ const ROOMS: {
       [830, 220, 110],
     ],
     enemies: [
-      [520, 520], // ground
-      [660, 245], // intended platform enemy
-      [450, 315], // intended platform enemy
+      [520, 520],
+      [660, 245],
+      [450, 315],
     ],
     doorY: 205,
   },
@@ -132,13 +127,11 @@ export default class RoomScene extends Phaser.Scene {
   }
 
   create() {
-
     // Start background music once (browser allows after user interaction)
     if (!this.sound.get("bgm")) {
       const music = this.sound.add("bgm", { loop: true, volume: 0.35 });
       music.play();
     }
-
 
     const w = this.scale.width;
     const h = this.scale.height;
@@ -177,7 +170,6 @@ export default class RoomScene extends Phaser.Scene {
     this.enemies = this.physics.add.group();
 
     // Make platform enemies patrol on the platform they belong to.
-    // We auto-detect "platform enemy" by checking whether its y matches a platform top area.
     (cfg.enemies as EnemyDef[]).forEach((edef) => {
       const [ex, ey] = edef;
 
@@ -208,14 +200,14 @@ export default class RoomScene extends Phaser.Scene {
     this.physics.add.collider(this.player, this.platforms);
     this.physics.add.collider(this.enemies, this.platforms);
 
+    // SHOOT KILL = +25
     this.physics.add.overlap(this.bullets, this.enemies, (bullet, enemy) => {
       bullet.destroy();
       enemy.destroy();
-      this.addPoints(100); // was 100, now scaled
+      this.addPoints(25);
     });
-    
 
-    // stomp / damage
+    // STOMP KILL = +25, otherwise damage
     this.physics.add.overlap(this.player, this.enemies, (_p, _e) => {
       const e = _e as Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 
@@ -224,11 +216,10 @@ export default class RoomScene extends Phaser.Scene {
 
       if (playerFalling && playerAbove) {
         e.destroy();
-        this.addPoints(150); // was 150, now scaled
+        this.addPoints(25);
         this.player.setVelocityY(-380);
         return;
       }
-      
 
       if ((this.player as any)._hitLock) return;
       (this.player as any)._hitLock = true;
@@ -397,50 +388,47 @@ export default class RoomScene extends Phaser.Scene {
     this.hasFlower = false;
 
     // Pick a random platform in the final room and place the flower above it
-const cfg = ROOMS[this.state.roomIndex];
-const plats = cfg.platforms as any[];
+    const cfg = ROOMS[this.state.roomIndex];
+    const plats = cfg.platforms as any[];
 
-const pick = plats[Math.floor(Math.random() * plats.length)];
-const [px, py, pWidth = 120] = pick;
+    const pick = plats[Math.floor(Math.random() * plats.length)];
+    const [px, py, pWidth = 120] = pick;
 
-// random x within platform width (padding so it doesn't hang off edge)
-const pad = 22;
-const fx = Phaser.Math.Between(px - pWidth / 2 + pad, px + pWidth / 2 - pad);
-const fy = py - 30;
+    // random x within platform width (padding so it doesn't hang off edge)
+    const pad = 22;
+    const fx = Phaser.Math.Between(px - pWidth / 2 + pad, px + pWidth / 2 - pad);
+    const fy = py - 30;
 
-const flower = this.physics.add.sprite(fx, fy, "px-flower");
-flower.setDisplaySize(24, 24);
-flower.body.allowGravity = false;
-
+    const flower = this.physics.add.sprite(fx, fy, "px-flower");
+    flower.setDisplaySize(24, 24);
+    flower.body.allowGravity = false;
 
     const queen = this.physics.add.sprite(w - 190, h - 140, "px-pink");
     queen.setDisplaySize(28, 38);
     queen.body.allowGravity = false;
 
     // Make final room harder: extra enemies on ground + platforms
-    // Ground enemies (roam the arena)
+    // Ground enemies
     this.spawnEnemy(420, 520);
     this.spawnEnemy(620, 520);
 
-    // Platform enemies (y should be platformY - ~25)
+    // Platform enemies with rails inferred automatically (because y matches a platform top)
     this.spawnEnemy(260, 385); // on platform y=410
     this.spawnEnemy(500, 325); // on platform y=350
     this.spawnEnemy(740, 265); // on platform y=290
 
-
     this.physics.add.overlap(this.player, flower, () => {
       flower.destroy();
       this.hasFlower = true;
-      this.addPoints(250); // was 250, now scaled
+      // (No score rule change requested for flower/queen, so leaving as-is)
+      this.addPoints(250);
     });
-    
 
     this.physics.add.overlap(this.player, queen, () => {
       if (!this.hasFlower) return;
-      this.addPoints(500); // was 500, now scaled
+      this.addPoints(500);
       this.endGame(true);
     });
-    
 
     this.add
       .text(w / 2, 120, "Find the flower 🌸 and bring it to the Queen!", {
@@ -464,18 +452,18 @@ flower.body.allowGravity = false;
   public applyQuizResult(nextData: { hearts: number; points: number }) {
     this.state.hearts = nextData.hearts;
     this.state.points = nextData.points;
-  
+
     // Always stop the quiz scene if it's still around
     if (this.scene.isActive("quiz") || this.scene.isPaused("quiz")) {
       this.scene.stop("quiz");
     }
-  
+
     // If dead -> end game (do NOT resume or restart)
     if (this.state.hearts <= 0) {
       this.endGame(false);
       return;
     }
-  
+
     // Continue to next room
     this.scene.resume(); // resume the room scene (it was paused)
     this.scene.restart({
@@ -484,10 +472,9 @@ flower.body.allowGravity = false;
       points: this.state.points,
       startTimeMs: this.state.startTimeMs,
     });
-  
+
     (this as any)._exitLock = false;
   }
-  
 
   private endGame(won: boolean) {
     const elapsedMs = Date.now() - this.state.startTimeMs;
@@ -500,10 +487,9 @@ flower.body.allowGravity = false;
     });
   }
 
-  private addPoints(raw: number) {
-    this.state.points += Math.round(raw * 0.33);
+  // NEW RULE: points are direct (no scaling) for kills.
+  private addPoints(delta: number) {
+    this.state.points += delta;
     this.updateUI();
   }
-  
-
 }

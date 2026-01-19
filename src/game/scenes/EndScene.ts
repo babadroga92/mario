@@ -53,7 +53,7 @@ export default class EndScene extends Phaser.Scene {
     });
 
     this.add
-      .text(w / 2, 280, "Leaderboard (Top 5) appears below the game.", {
+      .text(w / 2, 280, "Your score has been recorded! 🏆 Check the Top 5 leaderboard below.", {
         fontFamily: "monospace",
         fontSize: "16px",
         color: "#c7b9ff",

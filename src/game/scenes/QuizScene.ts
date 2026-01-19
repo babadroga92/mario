@@ -7,9 +7,9 @@ export default class QuizScene extends Phaser.Scene {
   }
 
   create(data: { roomIndex: number; hearts: number; points: number; startTimeMs: number }) {
+    // Use the shuffled/non-repeating set from registry (set in BootScene)
     const quizQuestions = this.registry.get("quizQuestions") as typeof QUESTIONS;
     const q = quizQuestions[data.roomIndex];
-
 
     const w = this.scale.width;
     const h = this.scale.height;
@@ -73,6 +73,8 @@ export default class QuizScene extends Phaser.Scene {
         })
         .setOrigin(0.5);
 
+      buttons.push({ btn, txt });
+
       btn.setInteractive({ useHandCursor: true }).on("pointerdown", () => {
         if (locked) return;
         locked = true;
@@ -86,23 +88,28 @@ export default class QuizScene extends Phaser.Scene {
 
         const correct = i === q.correctIndex;
 
-        // Highlight correct/selected
+        // highlight selected + correct answer
         const selected = buttons[i];
+        const correctBtn = buttons[q.correctIndex];
+
         if (correct) {
           selected.btn.setStrokeStyle(2, 0x12d58a);
           feedback.setColor("#7dffcf");
           feedback.setText(`✅ Correct!\n${q.explanation}`);
-          points += 50;
 
+          // NEW RULE: correct answer = +100
+          points += 100;
         } else {
-          // Wrong answer: subtract points instead of hearts
-          points = Math.max(0, points - 100);
-        
+          selected.btn.setStrokeStyle(2, 0xff3b3b);
+          correctBtn.btn.setStrokeStyle(2, 0x12d58a);
+
+          feedback.setColor("#ffd86b");
           feedback.setText(
             `❌ Wrong.\nCorrect answer: ${q.answers[q.correctIndex]}\n${q.explanation}\n(-100 points)`
           );
-          feedbackBg.setVisible(true);
-          feedback.setVisible(true);
+
+          // NEW RULE: wrong answer = -100 (allow negative)
+          points -= 100;
         }
 
         feedbackBg.setVisible(true);
@@ -127,8 +134,6 @@ export default class QuizScene extends Phaser.Scene {
           room.scene.resume();
         });
       });
-
-      buttons.push({ btn, txt });
     };
 
     // Answers moved UP so they never clash with feedback/continue
