@@ -95,15 +95,14 @@ export default class QuizScene extends Phaser.Scene {
           points += 50;
 
         } else {
-          selected.btn.setStrokeStyle(2, 0xff3b3b);
-          buttons[q.correctIndex].btn.setStrokeStyle(2, 0x12d58a);
-
-          feedback.setColor("#ffd86b");
+          // Wrong answer: subtract points instead of hearts
+          points = Math.max(0, points - 100);
+        
           feedback.setText(
-            `❌ Wrong.\nCorrect answer: ${q.answers[q.correctIndex]}\n${q.explanation}`
+            `❌ Wrong.\nCorrect answer: ${q.answers[q.correctIndex]}\n${q.explanation}\n(-100 points)`
           );
-
-          hearts -= 1;
+          feedbackBg.setVisible(true);
+          feedback.setVisible(true);
         }
 
         feedbackBg.setVisible(true);
@@ -125,7 +124,7 @@ export default class QuizScene extends Phaser.Scene {
         cont.setInteractive({ useHandCursor: true }).on("pointerdown", () => {
           const room = this.scene.get("room") as any;
           room.applyQuizResult({ hearts, points });
-          room.scene.stop();
+          room.scene.resume();
         });
       });
 
