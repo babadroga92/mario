@@ -6,7 +6,13 @@ import { useSearchParams } from "next/navigation";
 type ScoreRow = { username: string; score: number; timeMs: number; won: boolean; createdAt: number };
 
 export default function GameClient() {
-  const ref = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Keep stable refs so cleanup always works (even with async init)
+  const gameRef = useRef<any>(null);
+  const eventsRef = useRef<any>(null);
+  const handlerRef = useRef<any>(null);
+
   const sp = useSearchParams();
   const username = useMemo(() => sp.get("u") || "Anonymous", [sp]);
 
@@ -20,22 +26,36 @@ export default function GameClient() {
   }
 
   useEffect(() => {
-    if (!ref.current) return;
+    if (!containerRef.current) return;
 
-    let game: any;
-    let events: any;
+    let cancelled = false;
+
+    // IMPORTANT: prevent duplicate canvases
+    if (gameRef.current) {
+      try {
+        gameRef.current.destroy(true);
+      } catch {}
+      gameRef.current = null;
+    }
+
+    // IMPORTANT: clear any leftover <canvas> nodes
+    containerRef.current.innerHTML = "";
 
     (async () => {
       const mod = await import("@/src/game/createGame");
       const ev = await import("@/src/game/events");
 
-      const createGame = mod.createGame;
-      events = ev.gameEvents;
+      if (cancelled || !containerRef.current) return;
 
-      game = createGame(ref.current!, username);
+      const createGame = mod.createGame;
+      const events = ev.gameEvents;
+
+      eventsRef.current = events;
+
+      const game = createGame(containerRef.current, username);
+      gameRef.current = game;
 
       const handler = async (p: { username: string; score: number; timeMs: number; won: boolean }) => {
-        // game ended -> now we can show leaderboard
         setFinal({ score: p.score });
 
         await fetch("/api/scores", {
@@ -47,17 +67,33 @@ export default function GameClient() {
         await loadTop5();
       };
 
+      handlerRef.current = handler;
       events.on("SCORE_SUBMIT", handler);
-      (game as any).__scoreHandler = handler;
     })();
 
     return () => {
-      if (events && game && (game as any).__scoreHandler) {
-        events.off("SCORE_SUBMIT", (game as any).__scoreHandler);
+      cancelled = true;
+
+      // unsubscribe safely
+      if (eventsRef.current && handlerRef.current) {
+        try {
+          eventsRef.current.off("SCORE_SUBMIT", handlerRef.current);
+        } catch {}
       }
-      if (game) game.destroy(true);
+
+      // destroy game safely
+      if (gameRef.current) {
+        try {
+          gameRef.current.destroy(true);
+        } catch {}
+        gameRef.current = null;
+      }
+
+      // clear DOM (removes any leftover canvases)
+      if (containerRef.current) {
+        containerRef.current.innerHTML = "";
+      }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username]);
 
   return (
@@ -67,10 +103,10 @@ export default function GameClient() {
           <div className="text-slate-200/80 mb-2">
             Player: <span className="text-white font-semibold">{username}</span>
           </div>
-          <div ref={ref} />
+          <div ref={containerRef} />
         </div>
 
-        {/* ✅ Only show Top 5 AFTER the game ends */}
+        {/* Only show Top 5 AFTER the game ends */}
         {final && (
           <div className="rounded-2xl bg-slate-900/40 border border-white/10 p-6">
             <div className="text-white font-bold text-xl">Leaderboard (Top 5)</div>

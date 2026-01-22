@@ -75,6 +75,10 @@ export default function Home() {
 
         <div className="mt-6">
           <label className="block text-white font-semibold mb-2">Enter Your Username</label>
+          <div className="mt-2 text-sm font-bold text-amber-300">
+  ⚠️ Do not use your personal name
+</div>
+
           <input
             className="w-full rounded-xl bg-slate-950/60 border border-white/10 p-3 text-white outline-none focus:ring-2 focus:ring-emerald-400"
             placeholder="Your hero name..."
