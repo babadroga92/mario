@@ -97,37 +97,244 @@ export default function GameClient() {
   }, [username]);
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-purple-900 to-purple-700 p-6">
-      <div className="max-w-5xl mx-auto grid gap-6">
-        <div className="rounded-2xl bg-slate-900/40 border border-white/10 p-4 shadow-2xl">
-          <div className="text-slate-200/80 mb-2">
-            Player: <span className="text-white font-semibold">{username}</span>
+    <main
+      style={{
+        minHeight: "100vh",
+        fontFamily:
+          'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+        color: "white",
+        padding: 24,
+        background: "#070915",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      {/* Animated background (same vibe as Welcome) */}
+      <div
+        aria-hidden
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "radial-gradient(900px 520px at 20% 10%, rgba(168,85,247,0.22), transparent 60%), radial-gradient(700px 520px at 80% 20%, rgba(96,165,250,0.18), transparent 55%), linear-gradient(180deg, #12072a, #070915)",
+          animation: "floatBg 18s ease-in-out infinite alternate",
+        }}
+      />
+      <style>{`
+        @keyframes floatBg {
+          from { transform: translateY(0px); }
+          to { transform: translateY(-36px); }
+        }
+      `}</style>
+
+      <div style={{ position: "relative", maxWidth: 1180, margin: "0 auto" }}>
+        {/* Top pill */}
+        <div style={{ marginBottom: 14 }}>
+          <div
+            style={{
+              display: "inline-block",
+              padding: "6px 12px",
+              borderRadius: 999,
+              border: "1px solid rgba(255,255,255,0.12)",
+              background: "rgba(255,255,255,0.04)",
+              fontSize: 12,
+              color: "rgba(255,255,255,0.75)",
+            }}
+          >
+            Privacy Week 2026
           </div>
-          <div ref={containerRef} />
         </div>
 
-        {/* Only show Top 5 AFTER the game ends */}
-        {final && (
-          <div className="rounded-2xl bg-slate-900/40 border border-white/10 p-6">
-            <div className="text-white font-bold text-xl">Leaderboard (Top 5)</div>
-            <div className="text-emerald-300 mt-2">Your score: {final.score}</div>
+        <div style={{ display: "grid", gap: 16 }}>
+          {/* Game shell */}
+          <section
+            style={{
+              borderRadius: 18,
+              border: "1px solid rgba(255,255,255,0.12)",
+              background: "rgba(9,12,28,0.88)",
+              padding: 16,
+              boxShadow: "0 30px 60px rgba(0,0,0,0.45)",
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            {/* Neon inner frame (like game UI) */}
+            <div
+              aria-hidden
+              style={{
+                position: "absolute",
+                inset: 14,
+                borderRadius: 16,
+                border: "1px solid rgba(168,85,247,0.55)",
+                boxShadow:
+                  "0 0 0 1px rgba(0,0,0,0.55) inset, 0 0 30px rgba(168,85,247,0.18)",
+                pointerEvents: "none",
+              }}
+            />
 
-            <ol className="mt-4 space-y-2">
-              {top5.map((s, i) => (
-                <li
-                  key={s.createdAt + "-" + i}
-                  className="flex items-center justify-between bg-slate-950/40 border border-white/10 rounded-xl px-4 py-2"
+            {/* Header row */}
+            <div
+              style={{
+                position: "relative",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 12,
+                marginBottom: 10,
+              }}
+            >
+              <div style={{ fontSize: 14, color: "rgba(255,255,255,0.8)" }}>
+                Player:{" "}
+                <span style={{ color: "white", fontWeight: 800 }}>{username}</span>
+              </div>
+
+              {/* Tiny HUD chips (visual only) */}
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 8,
+                    padding: "8px 10px",
+                    borderRadius: 14,
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    background: "rgba(255,255,255,0.04)",
+                    fontSize: 12,
+                    fontWeight: 900,
+                    letterSpacing: 0.6,
+                    color: "rgba(255,255,255,0.9)",
+                  }}
                 >
-                  <div className="text-white">
-                    #{i + 1} <span className="font-semibold">{s.username}</span> {s.won ? "🌸" : ""}
+                  ❤️ HUD
+                </span>
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 8,
+                    padding: "8px 10px",
+                    borderRadius: 14,
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    background: "rgba(255,255,255,0.04)",
+                    fontSize: 12,
+                    fontWeight: 900,
+                    letterSpacing: 0.6,
+                    color: "rgba(255,255,255,0.9)",
+                  }}
+                >
+                  ⏱️ TIME
+                </span>
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 8,
+                    padding: "8px 10px",
+                    borderRadius: 14,
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    background: "rgba(255,255,255,0.04)",
+                    fontSize: 12,
+                    fontWeight: 900,
+                    letterSpacing: 0.6,
+                    color: "rgba(255,255,255,0.9)",
+                  }}
+                >
+                  ✨ SCORE
+                </span>
+              </div>
+            </div>
+
+            {/* Canvas container */}
+            <div
+              style={{
+                position: "relative",
+                borderRadius: 16,
+                border: "1px solid rgba(255,255,255,0.10)",
+                background: "rgba(0,0,0,0.18)",
+                padding: 10,
+                boxShadow: "0 18px 44px rgba(0,0,0,0.30)",
+              }}
+            >
+              <div ref={containerRef} />
+            </div>
+          </section>
+
+          {/* Results / leaderboard */}
+          {final && (
+            <section
+              style={{
+                borderRadius: 18,
+                border: "1px solid rgba(255,255,255,0.12)",
+                background: "rgba(9,12,28,0.88)",
+                padding: 18,
+                boxShadow: "0 30px 60px rgba(0,0,0,0.45)",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  justifyContent: "space-between",
+                  gap: 12,
+                  marginBottom: 10,
+                }}
+              >
+                <div>
+                  <div style={{ fontSize: 20, fontWeight: 900 }}>Leaderboard (Top 5)</div>
+                  <div style={{ marginTop: 6, color: "rgba(34,197,94,0.95)", fontWeight: 800 }}>
+                    Your score: {final.score}
                   </div>
-                  <div className="text-emerald-300 font-bold">{s.score}</div>
-                </li>
-              ))}
-              {top5.length === 0 && <div className="text-slate-200/70 mt-2">No scores yet.</div>}
-            </ol>
-          </div>
-        )}
+                </div>
+
+                <div
+                  style={{
+                    padding: "10px 12px",
+                    borderRadius: 14,
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    background: "rgba(255,255,255,0.04)",
+                    textAlign: "right",
+                    minWidth: 140,
+                  }}
+                >
+                  <div style={{ fontSize: 12, color: "rgba(255,255,255,0.65)" }}>Player</div>
+                  <div style={{ fontSize: 14, fontWeight: 900 }}>{username}</div>
+                </div>
+              </div>
+
+              <ol style={{ marginTop: 12, display: "grid", gap: 10, paddingLeft: 0, listStyle: "none" }}>
+                {top5.map((s, i) => (
+                  <li
+                    key={s.createdAt + "-" + i}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: 12,
+                      padding: "12px 14px",
+                      borderRadius: 16,
+                      border: "1px solid rgba(255,255,255,0.12)",
+                      background: "rgba(255,255,255,0.04)",
+                      boxShadow: "0 12px 28px rgba(0,0,0,0.25)",
+                    }}
+                  >
+                    <div style={{ color: "white", fontWeight: 800 }}>
+                      #{i + 1} <span style={{ fontWeight: 900 }}>{s.username}</span>{" "}
+                      {s.won ? "🌸" : ""}
+                    </div>
+                    <div style={{ color: "rgba(34,197,94,0.95)", fontWeight: 900, fontSize: 16 }}>
+                      {s.score}
+                    </div>
+                  </li>
+                ))}
+                {top5.length === 0 && (
+                  <div style={{ color: "rgba(255,255,255,0.7)", marginTop: 6 }}>
+                    No scores yet.
+                  </div>
+                )}
+              </ol>
+            </section>
+          )}
+        </div>
       </div>
     </main>
   );
