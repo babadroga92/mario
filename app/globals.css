@@ -3,6 +3,20 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Arcade / game vibe tokens */
+  --dpq-bg0: #070915;
+  --dpq-bg1: #12072a;
+  --dpq-panel: rgba(9, 12, 28, 0.88);
+
+  --dpq-neon: #a855f7;   /* purple neon */
+  --dpq-green: #22c55e;  /* green accent */
+  --dpq-blue: #60a5fa;   /* blue accent */
+  --dpq-warn: #fb7185;   /* pink/red warning */
+
+  --dpq-text: rgba(255, 255, 255, 0.92);
+  --dpq-muted: rgba(255, 255, 255, 0.72);
+  --dpq-muted2: rgba(255, 255, 255, 0.55);
 }
 
 @theme inline {
@@ -23,4 +37,165 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* =========================
+   DATA PRIVACY QUEST — Welcome Page Arcade Theme
+   Applied by adding className="dpq" on <main>
+   ========================= */
+
+.dpq {
+  background:
+    radial-gradient(900px 500px at 20% 10%, rgba(168, 85, 247, 0.22), transparent 60%),
+    radial-gradient(700px 500px at 80% 20%, rgba(96, 165, 250, 0.18), transparent 55%),
+    linear-gradient(180deg, var(--dpq-bg1), var(--dpq-bg0)) !important;
+
+  position: relative;
+  overflow: hidden;
+  color: var(--dpq-text);
+}
+
+/* subtle animated “float” */
+.dpq::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(600px 400px at 25% 15%, rgba(34, 197, 94, 0.10), transparent 65%);
+  animation: dpq-float 18s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes dpq-float {
+  from { transform: translateY(0px); }
+  to   { transform: translateY(-36px); }
+}
+
+/* --- DPQ layout tightening: wider card + better fit --- */
+.dpq .dpq-card {
+  max-width: 980px; /* wider than max-w-xl */
+}
+
+/* Ensure inner content can sit nicely in two columns without feeling cramped */
+@media (min-width: 1024px) {
+  .dpq .dpq-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 16px;
+    align-items: start;
+  }
+}
+
+/* Slightly tighter spacing to reduce height */
+.dpq .dpq-tight {
+  margin-top: 10px !important;
+}
+
+.dpq .dpq-tight2 {
+  margin-top: 8px !important;
+}
+
+/* Make the disclaimer + data collected visually compact */
+.dpq .dpq-compact-panel ul {
+  margin-top: 6px;
+  line-height: 1.55;
+}
+
+
+/* Titles */
+.dpq .text-5xl {
+  color: rgba(255, 255, 255, 0.95) !important;
+  text-shadow:
+    0 2px 0 rgba(0, 0, 0, 0.35),
+    0 0 22px rgba(168, 85, 247, 0.28);
+  letter-spacing: 0.14em !important;
+}
+
+.dpq .text-3xl.text-emerald-400 {
+  color: rgba(34, 197, 94, 0.95) !important;
+  text-shadow: 0 0 18px rgba(34, 197, 94, 0.22);
+}
+
+/* HUD chips / badges */
+.dpq .rounded-lg.bg-slate-950\/70 {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.35) inset,
+    0 12px 28px rgba(0, 0, 0, 0.25);
+}
+
+/* Panels */
+.dpq .rounded-xl.bg-slate-950\/35,
+.dpq .rounded-xl.bg-slate-950\/60 {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.35) inset,
+    0 20px 50px rgba(0, 0, 0, 0.25);
+}
+
+/* Typography */
+.dpq p,
+.dpq li,
+.dpq .text-slate-200\/85,
+.dpq .text-slate-200\/75,
+.dpq .text-slate-100\/90 {
+  color: var(--dpq-muted) !important;
+}
+
+/* Make amber disclaimer pop */
+.dpq .text-amber-300 {
+  color: rgba(251, 191, 36, 0.95) !important;
+  text-shadow: 0 0 14px rgba(251, 191, 36, 0.18);
+}
+
+/* “Do not use your personal name” -> red neon strip */
+.dpq .text-sm.font-bold.text-amber-300 {
+  color: rgba(251, 113, 133, 0.98) !important;
+  background: rgba(251, 113, 133, 0.10);
+  border: 1px solid rgba(251, 113, 133, 0.28);
+  padding: 10px 12px;
+  border-radius: 14px;
+  box-shadow: 0 0 20px rgba(251, 113, 133, 0.12);
+}
+
+/* Inputs */
+.dpq input {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(168, 85, 247, 0.35) !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.35) inset,
+    0 18px 40px rgba(0, 0, 0, 0.22);
+}
+
+.dpq input:focus {
+  outline: none !important;
+  box-shadow:
+    0 0 0 2px rgba(96, 165, 250, 0.45),
+    0 0 28px rgba(96, 165, 250, 0.18) !important;
+}
+
+/* Buttons */
+.dpq button {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+}
+
+/* Start button glow */
+.dpq .bg-emerald-500 {
+  background: linear-gradient(180deg, rgba(52, 211, 153, 1), rgba(34, 197, 94, 1)) !important;
+  color: #071225 !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.06em;
+  box-shadow:
+    0 16px 40px rgba(34, 197, 94, 0.22),
+    0 0 0 2px rgba(34, 197, 94, 0.18) !important;
+}
+
+.dpq .bg-emerald-500:hover {
+  filter: brightness(1.05);
+  box-shadow:
+    0 18px 48px rgba(34, 197, 94, 0.28),
+    0 0 0 2px rgba(34, 197, 94, 0.22) !important;
 }

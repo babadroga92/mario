@@ -8,9 +8,17 @@ export default function Home() {
   const router = useRouter();
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gradient-to-b from-purple-900 to-purple-700 p-6">
-      <div className="w-full max-w-xl rounded-2xl bg-slate-900/60 border border-white/10 p-8 shadow-2xl">
-        <div className="text-center mb-6">
+    <main className="dpq min-h-screen flex items-center justify-center bg-gradient-to-b from-purple-900 to-purple-700 p-6">
+      <div className="dpq-card w-full rounded-2xl bg-slate-900/60 border border-white/10 p-8 shadow-2xl">
+        {/* ✅ Top pill like the other game */}
+        <div className="mb-4">
+          <div className="inline-block px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs tracking-wide text-white/75">
+            Privacy Week 2026
+          </div>
+        </div>
+
+        {/* Header */}
+        <div className="text-center mb-5">
           <div className="text-5xl font-black tracking-widest text-white drop-shadow">
             DATA PRIVACY
           </div>
@@ -32,7 +40,7 @@ export default function Home() {
             </span>
           </div>
 
-          <p className="text-slate-200/85 mt-4 leading-relaxed">
+          <p className="text-slate-200/85 mt-3 leading-relaxed">
             Dash through <span className="text-white font-semibold">6 rooms</span>, defeat{" "}
             <span className="text-white font-semibold">data thieves</span>, and pass{" "}
             <span className="text-white font-semibold">GDPR Quiz Checkpoints</span> to protect the
@@ -40,70 +48,107 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="rounded-xl bg-slate-950/35 border border-white/10 p-4 text-slate-100/90 text-sm leading-relaxed">
-          <div className="font-bold text-white mb-2">How it works</div>
-          <ul className="list-disc pl-5 space-y-1">
-            <li>
-              You start with <span className="text-white font-semibold">3 hearts</span>. If hearts
-              hit <span className="text-white font-semibold">0</span>, the game ends.
-            </li>
-            <li>
-              Rooms <span className="text-white font-semibold">1–5</span>: reach the door to trigger
-              a <span className="text-white font-semibold">Quiz Checkpoint</span>.
-            </li>
-            <li>
-  Answering wrong shows the correct answer and deducts{" "}
-  <span className="text-white font-semibold">100 points</span> — you still move on.
-</li>
-<li>
-  ⚠️ <span className="text-amber-300 font-semibold">Pay attention to the questions!</span>{" "}
-  Quiz answers are worth more than defeating data thieves.
-</li>
+        {/* ✅ Two-column layout (shorter height) */}
+        <div className="dpq-grid">
+          {/* LEFT: How it works */}
+          <div className="rounded-xl bg-slate-950/35 border border-white/10 p-4 text-slate-100/90 text-sm leading-relaxed">
+            <div className="font-bold text-white mb-2">How it works</div>
+            <ul className="list-disc pl-5 space-y-1">
+              <li>
+                You start with <span className="text-white font-semibold">3 hearts</span>. If hearts
+                hit <span className="text-white font-semibold">0</span>, the game ends.
+              </li>
+              <li>
+                Rooms <span className="text-white font-semibold">1–5</span>: reach the door to trigger
+                a <span className="text-white font-semibold">Quiz Checkpoint</span>.
+              </li>
+              <li>
+                Answering wrong shows the correct answer and deducts{" "}
+                <span className="text-white font-semibold">100 points</span> — you still move on.
+              </li>
+              <li>
+                ⚠️{" "}
+                <span className="text-amber-300 font-semibold">Pay attention to the questions!</span>{" "}
+                Quiz answers are worth more than defeating data thieves.
+              </li>
+              <li>
+                Final room: find the <span className="text-white font-semibold">🌸 flower</span> and
+                bring it to the <span className="text-white font-semibold">Queen 👑</span> to win.
+              </li>
+              <li>
+                Tip:{" "}
+                <span className="text-emerald-300 font-semibold">
+                  More data thieves you kill, more points!
+                </span>
+              </li>
+            </ul>
 
-            <li>
-              Final room: find the <span className="text-white font-semibold">🌸 flower</span> and
-              bring it to the <span className="text-white font-semibold">Queen 👑</span> to win.
-            </li>
-            <li>
-              Tip:{" "}
-              <span className="text-emerald-300 font-semibold">
-                More data thieves you kill, more points!
-              </span>
-            </li>
-          </ul>
-        </div>
+            {/* Controls (moved here to avoid tall stacking) */}
+            <div className="dpq-tight text-sm text-slate-200/85">
+              <div className="font-semibold mb-2 text-white">Controls:</div>
+              <div>← → or A/D — Move</div>
+              <div>↑ or SPACE — Jump</div>
+              <div>X or ENTER — Zap ⚡</div>
+              <div className="mt-2 text-slate-200/75">
+                Bonus: Jumping on a thief from above can defeat them (Mario-style).
+              </div>
+            </div>
+          </div>
 
-        <div className="mt-6">
-          <label className="block text-white font-semibold mb-2">Enter Your Username</label>
-          <div className="mt-2 text-sm font-bold text-amber-300">
-  ⚠️ Do not use your personal name
-</div>
+          {/* RIGHT: Username + disclaimers */}
+          <div className="flex flex-col gap-3">
+            {/* Important */}
+            <div className="dpq-compact-panel rounded-xl bg-slate-950/35 border border-white/10 p-4 text-slate-100/90 text-sm leading-relaxed">
+              <div className="font-bold text-white mb-2">Important</div>
+              <div className="text-slate-200/85">
+                Please don’t use your real name or any real credentials. Use a fun alias — this game
+                stores data only for gameplay and demonstration purposes.
+              </div>
+            </div>
 
-          <input
-            className="w-full rounded-xl bg-slate-950/60 border border-white/10 p-3 text-white outline-none focus:ring-2 focus:ring-emerald-400"
-            placeholder="Your hero name..."
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </div>
+            {/* Data collected */}
+            <div className="dpq-compact-panel dpq-compact-panel rounded-xl bg-slate-950/35 border border-white/10 p-4 text-slate-100/90 text-sm leading-relaxed">
+              <div className="font-bold text-white mb-2">Data Collected During Gameplay</div>
+              <ul className="list-disc pl-5 space-y-1 text-slate-200/85">
+                <li>
+                  <span className="text-white font-semibold">Username:</span> The display name you choose for this game session.
+                </li>
+                <li>
+                  <span className="text-white font-semibold">Score:</span> Your accumulated points based on progress and performance.
+                </li>
+                <li>
+                  <span className="text-white font-semibold">Quiz Progress:</span> Your checkpoint answers and which rooms were completed.
+                </li>
+                <li>
+                  <span className="text-white font-semibold">Completion Timestamp:</span> The date and time when the session ends.
+                </li>
+              </ul>
+            </div>
 
-        <button
-          className="mt-4 w-full rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3"
-          onClick={() => {
-            const name = username.trim() || "Anonymous";
-            router.push(`/game?u=${encodeURIComponent(name)}`);
-          }}
-        >
-          ▶ START QUEST
-        </button>
+            {/* Username + Start */}
+            <div className="dpq-compact-panel rounded-xl bg-slate-950/35 border border-white/10 p-4">
+              <label className="block text-white font-semibold mb-2">Enter Your Username</label>
+              <div className="mt-2 text-sm font-bold text-amber-300">
+                ⚠️ Do not use your personal name
+              </div>
 
-        <div className="mt-6 text-sm text-slate-200/85">
-          <div className="font-semibold mb-2 text-white">Controls:</div>
-          <div>← → or A/D — Move</div>
-          <div>↑ or SPACE — Jump</div>
-          <div>X or ENTER — Zap ⚡</div>
-          <div className="mt-2 text-slate-200/75">
-            Bonus: Jumping on a thief from above can defeat them (Mario-style).
+              <input
+                className="dpq-tight2 w-full rounded-xl bg-slate-950/60 border border-white/10 p-3 text-white outline-none focus:ring-2 focus:ring-emerald-400"
+                placeholder="Your hero name..."
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+
+              <button
+                className="dpq-tight2 w-full rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3"
+                onClick={() => {
+                  const name = username.trim() || "Anonymous";
+                  router.push(`/game?u=${encodeURIComponent(name)}`);
+                }}
+              >
+                ▶ START QUEST
+              </button>
+            </div>
           </div>
         </div>
       </div>
